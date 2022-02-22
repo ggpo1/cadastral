@@ -1,12 +1,11 @@
-import React from 'react';
-import './App.css';
+import React from "react";
+import { MapView } from "features";
+import { Container } from "./app.styles";
 
-function App() {
+export const App = () => {
   return (
-    <div className="App">
-      
-    </div>
+    <Container data-cypress="app">
+      <MapView />
+    </Container>
   );
-}
-
-export default App;
+};
