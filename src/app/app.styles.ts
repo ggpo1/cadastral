@@ -11,3 +11,5 @@ export const Search = styled.div`
   top: 24px;
   right: 24px;
 `;
+
+

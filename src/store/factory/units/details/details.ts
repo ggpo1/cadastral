@@ -4,7 +4,7 @@ import { actionsFactory } from "./details.actions";
 import { State } from "./details.types";
 
 export const detailsFactory = () => {
-  const store = createStore<State | null>(null);
+  const store = createStore<State>({ data: null, isLoading: false });
   const hooks = hooksFactory(store);
   const actions = actionsFactory(store);
 
