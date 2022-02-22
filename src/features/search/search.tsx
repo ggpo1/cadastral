@@ -1,24 +1,30 @@
 import React from "react";
-
+import { Icons } from "assets";
 import { Input, Apply } from "./features";
-import { useStoreState } from "./search.hooks";
+import * as hooks from "./search.hooks";
 import * as Markup from "./search.styles";
 
-const apply = <Markup.ApplyIcon />;
-
 const clean = <Markup.CleanIcon />;
+const spinner = <Icons.Spinner />;
+
+
 
 export const Search = () => {
-  const { value, actions } = useStoreState();
+  const { value, actions } = hooks.useStoreState();
+  const { isLoading } = hooks.useIsLoading(value);
 
   return (
-    <Markup.Container isEmptyValue={!value}>
+    <Markup.Container isEmptyValue={!value} isLoading={isLoading}>
       <Markup.Input>
-        <Input value={value} onChange={actions.handleSearchChange} />
+        <Input
+          value={value}
+          placeholder="Поиск по номеру"
+          onChange={actions.handleSearchChange}
+        />
       </Markup.Input>
       <Markup.Actions>
+        {isLoading && spinner}
         {!!value && <Apply onClick={actions.handleSearchClean} text={clean} />}
-        <Apply onClick={actions.handleSearchApply} text={apply} />
       </Markup.Actions>
     </Markup.Container>
   );

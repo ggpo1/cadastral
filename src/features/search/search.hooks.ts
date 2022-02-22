@@ -91,3 +91,24 @@ export const useStoreState = () => {
 
   return { value, actions };
 };
+
+// -------------------------------------
+
+export const useIsLoading = (value: string) => {
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!value) return;
+    setIsLoading(true);
+
+    const timerId = setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [value]);
+
+  return { isLoading };
+};

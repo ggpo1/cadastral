@@ -1,11 +1,21 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { Icons } from "assets";
+import { StyleState } from "./search.types";
 
-export const Container = styled.div<{ isEmptyValue?: boolean }>`
+const getStyleByState = (args: StyleState) => {
+  const value = ["1fr"];
+
+  if (args.isLoading) value.push("32px");
+  if (!args.isEmptyValue) value.push("32px");
+
+  return value.join(" ");
+};
+
+export const Container = styled.div<StyleState>`
   display: grid;
   width: 350px;
-  grid-template-columns: ${({ isEmptyValue }) =>
-    isEmptyValue ? "1fr 32px" : "1fr 64px"};
+  grid-template-columns: ${({ isEmptyValue, isLoading }) =>
+    getStyleByState({ isEmptyValue, isLoading })};
   align-items: stretch;
   position: relative;
   background-color: #ffffff;
@@ -19,16 +29,8 @@ export const Actions = styled.div`
   grid-template-columns: 32px 32px;
 `;
 
-const icon = css`
+export const CleanIcon = styled(Icons.Clean)`
   display: block;
   width: 24px;
   height: 24px;
-`;
-
-export const CleanIcon = styled(Icons.Clean)`
-  ${icon}
-`;
-
-export const ApplyIcon = styled(Icons.Apply)`
-  ${icon}
 `;

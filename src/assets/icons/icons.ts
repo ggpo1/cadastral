@@ -1,2 +1,2 @@
 export { ReactComponent as Clean } from "./clean.svg";
-export { ReactComponent as Apply } from "./apply.svg";
+export { ReactComponent as Spinner } from "./spinner.svg";
