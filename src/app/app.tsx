@@ -1,11 +1,14 @@
 import React from "react";
-import { MapView } from "features";
-import { Container } from "./app.styles";
+import { MapView, Search } from "features";
+import * as Markup from "./app.styles";
 
 export const App = () => {
   return (
-    <Container data-cypress="app">
+    <Markup.Container data-cypress="app">
       <MapView />
-    </Container>
+      <Markup.Search>
+        <Search />
+      </Markup.Search>
+    </Markup.Container>
   );
 };
