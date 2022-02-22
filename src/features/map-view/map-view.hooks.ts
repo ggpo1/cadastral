@@ -19,7 +19,7 @@ const layersFactory = () => {
 
 const eventListnerFactory = (view: MapView, storeContext: IStoreContext) => {
   view.on("click", (event) => {
-    storeContext?.location.actions.updatePosition({
+    storeContext?.location.actions.update({
       latitude: event.mapPoint.latitude,
       longitude: event.mapPoint.longitude,
     });

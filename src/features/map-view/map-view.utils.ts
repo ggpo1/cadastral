@@ -12,7 +12,6 @@ export const cadastralDivisionLayerFactory = () => {
 
 const BUILDING_BIG_ID = "BUILDING_BIG_ID";
 export const buildingOnBigZoomLayerFactory = () => {
-    console.log("REACT_APP_MAP_BUILDING_BIG_TILE", process.env.REACT_APP_MAP_BUILDING_BIG_TILE)
   return new WebTileLayer({
     id: BUILDING_BIG_ID,
     urlTemplate: process.env.REACT_APP_MAP_BUILDING_BIG_TILE,

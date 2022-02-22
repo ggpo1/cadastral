@@ -3,17 +3,19 @@ import { sample, guard } from "effector";
 type Units = {
   location: ReturnType<typeof import("./units").locationFactory>;
   search: ReturnType<typeof import("./units").searchFactory>;
+  details: ReturnType<typeof import("./units").detailsFactory>;
 };
 
 export const connectionsFactory = (units: Units) => {
-  const { search, location } = units;
+  const { search, location, details } = units;
 
   sample({
     clock: guard({
       source: search.store,
       filter: (source) => !!source,
     }),
-    target: location.actions.clearPosition,
+    fn: (source) => source,
+    target: [location.actions.clear, details.actions.loadBySearch],
   });
 
   sample({
@@ -21,6 +23,10 @@ export const connectionsFactory = (units: Units) => {
       source: location.store,
       filter: (source) => !!source,
     }),
-    target: search.actions.clear,
+    fn: (source) => {
+      console.log("location::store", source);
+      return source;
+    },
+    target: [search.actions.clear, details.actions.loadByPosition],
   });
 };

@@ -80,7 +80,7 @@ export const useStoreState = () => {
   const actions = actionsFactory(dispatch);
 
   React.useEffect(() => {
-    const unsubscribe = storeContext?.location.actions.updatePosition.watch(
+    const unsubscribe = storeContext?.location.actions.update.watch(
       actions.handleSearchClean
     );
 
