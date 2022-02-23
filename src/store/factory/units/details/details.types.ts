@@ -1,5 +1,5 @@
 export type State = {
-  data: object | null;
+  data: Api.Feature | null;
   isLoading: boolean;
 };
 export type Store = import("effector").Store<State>;

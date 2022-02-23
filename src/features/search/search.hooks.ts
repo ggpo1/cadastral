@@ -77,11 +77,11 @@ export const useStoreState = () => {
     initialState
   );
 
-  const actions = actionsFactory(dispatch);
+  const actions = React.useRef(actionsFactory(dispatch));
 
   React.useEffect(() => {
     const unsubscribe = storeContext?.location.actions.update.watch(
-      actions.handleSearchClean
+      actions.current.handleSearchClean
     );
 
     return () => {
@@ -89,26 +89,25 @@ export const useStoreState = () => {
     };
   }, [storeContext, actions]);
 
-  return { value, actions };
+  // throttling
+  React.useEffect(() => {
+    const timeId = setTimeout(() => {
+      console.log("throttling");
+      actions.current.handleSearchApply();
+    }, 300);
+
+    return () => {
+      clearTimeout(timeId);
+    };
+  }, [value, actions]);
+
+  return { value, actions: actions.current };
 };
 
 // -------------------------------------
 
-export const useIsLoading = (value: string) => {
-  const [isLoading, setIsLoading] = React.useState(false);
-
-  React.useEffect(() => {
-    if (!value) return;
-    setIsLoading(true);
-
-    const timerId = setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
-
-    return () => {
-      clearTimeout(timerId);
-    };
-  }, [value]);
-
+export const useIsLoading = () => {
+  const storeContext = useStoreContext();
+  const isLoading = !!storeContext?.search.hooks.usePending();
   return { isLoading };
 };

@@ -1,18 +1,52 @@
-import { createEvent } from "effector";
+import { createEvent, createEffect } from "effector";
+import { api } from "api";
+import { shared } from "shared";
 import type { Store, State } from "./search.types";
 
-// autocomplete
-// https://pkk.rosreestr.ru/api/typeahead/1?text=77%3A01%3A0001075%3A&_=1645555595523
-
 export const actionsFactory = (store: Store) => {
-  const update = createEvent<State>();
-  store.on(update, (_, payload) => payload);
+  const update = createEvent<State["value"]>();
+  store.on(update, (_, payload) => {
+    //shared.globalValues.abortController.abort();
+    return { value: payload, autocomplete: [], pending: false };
+  });
 
   const clear = createEvent();
-  store.on(clear, () => "");
+  store.on(clear, () => {
+    // shared.globalValues.abortController.abort();
+    return { value: "", autocomplete: [], pending: false };
+  });
+
+  const loadAutocompleteByValue = createEffect(
+    async (value: State["value"]) => {
+      if (!value) return Promise.resolve([]);
+
+      return (
+        (
+          await api.autocompleteSearchText(
+            value,
+            shared.globalValues.abortController
+          )
+        )?.results ?? []
+      );
+    }
+  );
+
+  store.on(loadAutocompleteByValue.doneData, (state, payload) => ({
+    ...state,
+    autocomplete: payload,
+  }));
+  store.on(loadAutocompleteByValue.failData, (state) => ({
+    ...state,
+    autocomplete: [],
+  }));
+  store.on(loadAutocompleteByValue.pending, (state, payload) => ({
+    ...state,
+    pending: payload,
+  }));
 
   return {
     update,
     clear,
+    loadAutocompleteByValue,
   };
 };

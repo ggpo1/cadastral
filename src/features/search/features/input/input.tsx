@@ -5,7 +5,7 @@ import type { Props } from "./input.types";
 
 export const Input = (props: Props) => {
   const { handleChange } = useHandleChange(props);
-  
+
   return (
     <Markup.Input
       value={props.value}

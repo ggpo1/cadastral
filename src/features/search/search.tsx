@@ -7,11 +7,9 @@ import * as Markup from "./search.styles";
 const clean = <Markup.CleanIcon />;
 const spinner = <Icons.Spinner />;
 
-
-
 export const Search = () => {
   const { value, actions } = hooks.useStoreState();
-  const { isLoading } = hooks.useIsLoading(value);
+  const { isLoading } = hooks.useIsLoading();
 
   return (
     <Markup.Container isEmptyValue={!value} isLoading={isLoading}>

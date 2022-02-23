@@ -1,32 +1,44 @@
 import { createEvent, createEffect } from "effector";
+import { api } from "api";
+import { shared } from "shared";
 import type { Store } from "./details.types";
 
 let debugPromise: NodeJS.Timeout;
 
-// details by position
-// https://pkk.rosreestr.ru/api/features/1?_=1645555772355&text=55.769342+37.597441&limit=40&skip=0&inPoint=true&tolerance=1
-
 const loadByPositionFactory = () => {
-  return createEffect((args: any): Promise<object> => {
-    console.log("loadByPositionFactory::args", args);
-    if (debugPromise) clearTimeout(debugPromise);
+  return createEffect(
+    async (
+      args: { latitude: number; longitude: number } | null
+    ): Promise<Api.Feature | null> => {
+      //shared.globalValues.abortController.abort();
+      shared.globalValues.abortController = new AbortController();
 
-    return new Promise((resolve) => {
-      debugPromise = setTimeout(() => {
-        resolve({
-          date: Date.now(),
-        });
-      }, 1000);
-    });
-  });
+      if (!args) return Promise.resolve(null);
+
+      const latitude = Math.round(args.latitude * 1000000) / 1000000;
+      const longitude = Math.round(args.longitude * 1000000) / 1000000;
+
+      const queryData = await api.searchByCoordinates(
+        { latitude, longitude },
+        shared.globalValues.abortController
+      );
+
+      const id = queryData.features?.[0]?.attrs?.id;
+      const type = queryData.features?.[0]?.type;
+      if (!queryData.total || !id || !type) return null;
+
+      return (
+        await api.detailsByIdAndType(
+          { type, id },
+          shared.globalValues.abortController
+        )
+      ).feature;
+    }
+  );
 };
-
-// details by search
-// https://pkk.rosreestr.ru/api/features/1/77:1:1075:4?date_format=%c&_=1645555648163
 
 const loadBySearchFactory = () => {
   return createEffect((search: string): Promise<object> => {
-    console.log("search", search);
     if (debugPromise) clearTimeout(debugPromise);
 
     return new Promise((resolve) => {

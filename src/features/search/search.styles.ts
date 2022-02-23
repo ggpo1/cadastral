@@ -13,7 +13,7 @@ const getStyleByState = (args: StyleState) => {
 
 export const Container = styled.div<StyleState>`
   display: grid;
-  width: 350px;
+  width: 100%;
   grid-template-columns: ${({ isEmptyValue, isLoading }) =>
     getStyleByState({ isEmptyValue, isLoading })};
   align-items: stretch;

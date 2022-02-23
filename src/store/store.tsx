@@ -1,5 +1,5 @@
 import React from "react";
-import {factory} from "./factory"
+import { factory } from "./factory";
 import { StoreContext } from "./store.consts";
 
 export const Store: React.FC<{}> = ({ children }) => {

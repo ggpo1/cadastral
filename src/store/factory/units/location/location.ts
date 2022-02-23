@@ -8,7 +8,5 @@ export const locationFactory = () => {
   const hooks = hooksFactory(store);
   const actions = actionsFactory(store);
 
-  store.watch((data) => console.log("location data:", data));
-
   return { store, hooks, actions };
 };

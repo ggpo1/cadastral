@@ -12,9 +12,9 @@ export const connectionsFactory = (units: Units) => {
   sample({
     clock: guard({
       source: search.store,
-      filter: (source) => !!source,
+      filter: (source) => !!source.value,
     }),
-    fn: (source) => source,
+    fn: (source) => source.value,
     target: [location.actions.clear, details.actions.loadBySearch],
   });
 
@@ -23,10 +23,7 @@ export const connectionsFactory = (units: Units) => {
       source: location.store,
       filter: (source) => !!source,
     }),
-    fn: (source) => {
-      console.log("location::store", source);
-      return source;
-    },
+    fn: (source) => source,
     target: [search.actions.clear, details.actions.loadByPosition],
   });
 };
