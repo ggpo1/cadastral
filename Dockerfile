@@ -1,5 +1,5 @@
 # 1 project building
-FROM node:lts-alpine AS base
+FROM node:16 AS base
 
 # 1.1 node build env
 ENV GENERATE_SOURCEMAP=false
@@ -24,7 +24,7 @@ ENV TZ=Europe/Moscow
 WORKDIR /var/project
 COPY --from=base /var/project/build /var/project/build
 COPY --from=base /var/project/config/nginx.conf /etc/nginx/nginx.conf
-COPY --from=base /var/project/run.sh .
+COPY --from=base /var/project/config/run.sh .
 
 EXPOSE 51268
 
