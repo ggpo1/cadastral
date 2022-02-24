@@ -38,16 +38,22 @@ const loadByPositionFactory = () => {
 };
 
 const loadBySearchFactory = () => {
-  return createEffect((search: string): Promise<object> => {
-    if (debugPromise) clearTimeout(debugPromise);
+  return createEffect(async (search: string): Promise<Api.Feature | null> => {
+    const queryData = await api.searchByTitle(
+      search,
+      shared.globalValues.abortController
+    );
 
-    return new Promise((resolve) => {
-      debugPromise = setTimeout(() => {
-        resolve({
-          date: Date.now(),
-        });
-      }, 1000);
-    });
+    const id = queryData.features?.[0]?.attrs?.id;
+    const type = queryData.features?.[0]?.type;
+    if (!queryData.total || !id || !type) return null;
+
+    return (
+      await api.detailsByIdAndType(
+        { type, id },
+        shared.globalValues.abortController
+      )
+    ).feature;
   });
 };
 
@@ -76,7 +82,7 @@ export const actionsFactory = (store: Store) => {
     isLoading: false,
   }));
   store.on(loadBySearch.pending, (state, payload) => ({
-    data: state.data,
+    data: state?.data ?? null,
     isLoading: payload,
   }));
 

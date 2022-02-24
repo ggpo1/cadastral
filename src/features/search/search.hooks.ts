@@ -6,27 +6,8 @@ const initialState = "";
 enum EAction {
   Change = "change",
   Clean = "clean",
-  Apply = "apply",
+  Sync = "sync",
 }
-
-const handleSearchChangeFactory = (dispatch: any) => (value: string) => {
-  dispatch({
-    type: EAction.Change,
-    payload: value,
-  });
-};
-
-const handleSearchCleanFactory = (dispatch: any) => () => {
-  dispatch({
-    type: EAction.Clean,
-  });
-};
-
-const handleSearchApplyFactory = (dispatch: any) => () => {
-  dispatch({
-    type: EAction.Apply,
-  });
-};
 
 type ActionSearchChange = {
   type: typeof EAction.Change;
@@ -37,25 +18,46 @@ type ActionSearchClean = {
   type: EAction.Clean;
 };
 
-type ActionSearchApply = {
-  type: EAction.Apply;
+type ActionSearchSync = {
+  type: EAction.Sync;
+  payload: string;
 };
 
-type Actions = ActionSearchChange | ActionSearchClean | ActionSearchApply;
+type Actions = ActionSearchChange | ActionSearchClean | ActionSearchSync;
 
 type Dispatch = React.Dispatch<Actions>;
+
+const handleSearchChangeFactory = (dispatch: Dispatch) => (value: string) => {
+  dispatch({
+    type: EAction.Change,
+    payload: value,
+  });
+};
+
+const handleSearchCleanFactory = (dispatch: Dispatch) => () => {
+  dispatch({
+    type: EAction.Clean,
+  });
+};
+
+const handleSearchSyncFactory = (dispatch: Dispatch) => (value: string) => {
+  dispatch({
+    type: EAction.Sync,
+    payload: value,
+  });
+};
 
 const reduce =
   (storeContext: IStoreContext) =>
   (state = initialState, action: Actions) => {
     switch (action.type) {
       case EAction.Change:
+        storeContext?.search.actions.update(action.payload);
         return action.payload;
       case EAction.Clean:
         return "";
-      case EAction.Apply:
-        storeContext?.search.actions.update(state);
-        return state;
+      case EAction.Sync:
+        return action.payload;
       default:
         return state;
     }
@@ -65,7 +67,7 @@ const actionsFactory = (dispatch: Dispatch) => {
   return {
     handleSearchChange: handleSearchChangeFactory(dispatch),
     handleSearchClean: handleSearchCleanFactory(dispatch),
-    handleSearchApply: handleSearchApplyFactory(dispatch),
+    handleSearchSync: handleSearchSyncFactory(dispatch),
   };
 };
 
@@ -80,26 +82,19 @@ export const useStoreState = () => {
   const actions = React.useRef(actionsFactory(dispatch));
 
   React.useEffect(() => {
-    const unsubscribe = storeContext?.location.actions.update.watch(
+    const unsubscribeLocationUpdate = storeContext?.location.actions.update.watch(
       actions.current.handleSearchClean
     );
 
+    const unsubscribeSearchSet = storeContext?.search.actions.set.watch(
+      actions.current.handleSearchSync
+    );
+
     return () => {
-      unsubscribe?.();
+      unsubscribeLocationUpdate?.();
+      unsubscribeSearchSet?.();
     };
   }, [storeContext, actions]);
-
-  // throttling
-  React.useEffect(() => {
-    const timeId = setTimeout(() => {
-      console.log("throttling");
-      actions.current.handleSearchApply();
-    }, 300);
-
-    return () => {
-      clearTimeout(timeId);
-    };
-  }, [value, actions]);
 
   return { value, actions: actions.current };
 };

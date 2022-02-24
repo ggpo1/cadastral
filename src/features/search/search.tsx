@@ -1,6 +1,6 @@
 import React from "react";
 import { Icons } from "assets";
-import { Input, Apply } from "./features";
+import { Input, Autocomplete, Apply } from "./features";
 import * as hooks from "./search.hooks";
 import * as Markup from "./search.styles";
 
@@ -19,6 +19,7 @@ export const Search = () => {
           placeholder="Поиск по номеру"
           onChange={actions.handleSearchChange}
         />
+        <Autocomplete />
       </Markup.Input>
       <Markup.Actions>
         {isLoading && spinner}

@@ -10,6 +10,12 @@ export const actionsFactory = (store: Store) => {
     return { value: payload, autocomplete: [], pending: false };
   });
 
+  const set = createEvent<State["value"]>();
+  store.on(set, (_, payload) => {
+    //shared.globalValues.abortController.abort();
+    return { value: payload, autocomplete: [], pending: false };
+  });
+
   const clear = createEvent();
   store.on(clear, () => {
     // shared.globalValues.abortController.abort();
@@ -45,6 +51,7 @@ export const actionsFactory = (store: Store) => {
   }));
 
   return {
+    set,
     update,
     clear,
     loadAutocompleteByValue,

@@ -14,9 +14,11 @@ export const connectionsFactory = (units: Units) => {
       source: search.store,
       filter: (source) => !!source.value,
     }),
-    fn: (source) => source.value,
-    target: [location.actions.clear, details.actions.loadBySearch],
+    fn: () => undefined,
+    target: [location.actions.clear],
   });
+
+  search.actions.set.watch(details.actions.loadBySearch);
 
   sample({
     clock: guard({
