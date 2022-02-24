@@ -26,7 +26,7 @@ export const Container = styled.div`
   transform: translate(0, 6px);
   background-color: #ffffff;
   max-height: 200px;
-  overflow: scroll;
+  overflow-y: scroll;
   border: 1px solid #c4c4c4;
   box-shadow: 0 0 6px 0px rgba(34, 60, 80, 0.2);
 
